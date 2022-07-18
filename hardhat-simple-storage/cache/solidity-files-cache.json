@@ -2,7 +2,7 @@
   "_format": "hh-sol-cache-2",
   "files": {
     "/mnt/c/Users/Marko/Desktop/Marko/Blockchain/Blockchain - 32 hour course/Blockchain-fullstack-project/hardhat-simple-storage/contracts/SimpleStorage.sol": {
-      "lastModificationDate": 1658059433549,
+      "lastModificationDate": 1658151033239,
       "contentHash": "a6f237ac651dbeaff2c694eb87c92c17",
       "sourceName": "contracts/SimpleStorage.sol",
       "solcConfig": {
@@ -25,9 +25,6 @@
                 "ast"
               ]
             }
-          },
-          "metadata": {
-            "useLiteralContent": false
           }
         }
       },

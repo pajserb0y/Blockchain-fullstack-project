@@ -1,27 +1,29 @@
-const { ethers } = require("hardhat")
-const { assert, expect } = require("chai")
+import { ethers } from "hardhat"
+import { assert, expect } from "chai"
+import {SimpleStorage, SimpleStorage__factory} from  "../typechain-types"
+import { BigNumber } from "ethers"
 
 describe("SimpleStorage", function () {
-    let simpleStorageFactory, simpleStorage
+    let simpleStorageFactory: SimpleStorage__factory, simpleStorage: SimpleStorage
     beforeEach(async function () {
-        simpleStorageFactory = await ethers.getContractFactory("SimpleStorage")
+        simpleStorageFactory = (await ethers.getContractFactory("SimpleStorage")) as SimpleStorage__factory
         simpleStorage = await simpleStorageFactory.deploy()
     })
 
     it("Should start with favourite number of zero", async function () {
         const currentValue = await simpleStorage.retrieve()
-        const expectedValue = 0
+        const expectedValue = "0"
         //assert
         //expect
-        assert.equal(currentValue, expectedValue)
+        assert.equal(currentValue.toString(), expectedValue)
     })
     it("Should update when we call store", async function () {
         const transactoinResponse = await simpleStorage.store(7)
         await transactoinResponse.wait(1)
         const updatedValue = await simpleStorage.retrieve()
-        const expectedValue = 7
+        const expectedValue = "7"
 
-        assert.equal(updatedValue, expectedValue)
+        assert.equal(updatedValue.toString(), expectedValue)
         expect(updatedValue).to.equal(expectedValue) // same as assert
     })
 
