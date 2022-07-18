@@ -24,4 +24,15 @@ describe("SimpleStorage", function () {
         assert.equal(updatedValue, expectedValue)
         expect(updatedValue).to.equal(expectedValue) // same as assert
     })
+
+    // it("Should add person", async function () {
+    //     const transactoinResponse = await simpleStorage.addPerson("Marko", 3)
+    //     await transactoinResponse.wait(1)
+    //     people = await simpleStorage.people
+    //     const nameToFavoriteNumber = await simpleStorage.nameToFavoriteNumber
+    //     console.log(people)
+    //     console.log(nameToFavoriteNumber)
+    //     //assert.equal(people[0].name, "Marko")
+    //     // assert.equal(nameToFavouriteNumber["Marko"], 3)
+    // })
 })
