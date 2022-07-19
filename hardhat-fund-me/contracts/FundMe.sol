@@ -22,7 +22,7 @@ contract FundMe {
     uint256 public constant MINIMUM_USD = 50 * 1e18;
     //less gas with constant
     address[] public funders;
-    mapping(address => uint256) public adressToAmoutFunded;
+    mapping(address => uint256) public addressToAmoutFunded;
 
     address public immutable i_owner;
     //less gas with immutable
@@ -62,7 +62,7 @@ contract FundMe {
         //if condition is not met, require reverts everything done in the function!!!
         //everythong before require spends gas, but for everything after gas is returned!!!
         funders.push(msg.sender);
-        adressToAmoutFunded[msg.sender] = msg.value;
+        addressToAmoutFunded[msg.sender] = msg.value;
     }
 
     function withdraw() public onlyOwner {
@@ -72,7 +72,7 @@ contract FundMe {
             funderIndex++
         ) {
             address funder = funders[funderIndex];
-            adressToAmoutFunded[funder] = 0;
+            addressToAmoutFunded[funder] = 0;
         }
         funders = new address[](0);
         //transfer
