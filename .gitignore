@@ -1,6 +1,11 @@
 # Created by https://www.toptal.com/developers/gitignore/api/solidity,node,windows,linux,visualstudiocode
 # Edit at https://www.toptal.com/developers/gitignore?templates=solidity,node,windows,linux,visualstudiocode
 
+#testing
+gas-report.txt
+coverage.json
+coverage
+
 ### Linux ###
 *~
 .encryptedKey.json
