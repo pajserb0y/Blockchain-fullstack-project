@@ -6,29 +6,52 @@
 pragma solidity ^0.8.8;
 
 import "./PriceConverter.sol";
+import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 
-error NotOwner();
+error FundMe__NotOwner();
 
+/// @title Contract for crowd funding
+/// @author Marko Nikolic
+/// @notice This contract is to demo a ample funding contract
+/// @dev This implements price feeds as our library
 contract FundMe {
+    //Type declarations
     using PriceConverter for uint256;
 
+    //state variables
     uint256 public constant MINIMUM_USD = 50 * 1e18;
     //less gas with constant
-
     address[] public funders;
     mapping(address => uint256) public adressToAmoutFunded;
 
     address public immutable i_owner;
-
     //less gas with immutable
-
     AggregatorV3Interface public priceFeed;
+
+    modifier onlyOwner() {
+        // require(msg.sender == i_owner,"Only owner can withdraw money");
+        if (msg.sender != i_owner) {
+            revert FundMe__NotOwner();
+        }
+        _; //this is where resto of the code of original function is going, it can also go before
+    }
 
     constructor(address priceFeedAddress) {
         i_owner = msg.sender; //msg.sender = one that deploys contract, for first time
         priceFeed = AggregatorV3Interface(priceFeedAddress);
     }
 
+    //If someone wants to send money to contract without fundMe
+    receive() external payable {
+        fund();
+    }
+
+    fallback() external payable {
+        fund();
+    }
+
+    /// @notice This function funds this contract
+    /// @dev This implements price feeds as out library
     function fund() public payable {
         //set minimum fund amout of USD
         // 1.How do we send ETH to this contract
@@ -65,21 +88,4 @@ contract FundMe {
         }("");
         require(callSuccess, "Call Failed");
     }
-
-    modifier onlyOwner() {
-        // require(msg.sender == i_owner,"Only owner can withdraw money");
-        if (msg.sender != i_owner) {
-            revert NotOwner();
-        }
-        _; //this is where resto of the code of original function is going, it can also go before
-    }
-
-    receive() external payable {
-        fund();
-    }
-
-    fallback() external payable {
-        fund();
-    }
-    //If someone wants to send money to contract without fundMe
 }
