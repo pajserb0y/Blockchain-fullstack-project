@@ -122,10 +122,8 @@ describe("FundMe", async function () {
 
             for (let i = 1; i < 6; i++) {
                 assert.equal(
-                    await fundMe
-                        .addressToAmoutFunded(accounts[i].address)
-                        .toString(),
-                    "0"
+                    await fundMe.addressToAmoutFunded(accounts[i].address),
+                    0
                 )
             }
         })
