@@ -22,15 +22,18 @@ contract FundMe {
 
     //less gas with immutable
 
-    constructor() {
+    AggregatorV3Interface public priceFeed;
+
+    constructor(address priceFeedAddress) {
         i_owner = msg.sender; //msg.sender = one that deploys contract, for first time
+        priceFeed = AggregatorV3Interface(priceFeedAddress);
     }
 
     function fund() public payable {
         //set minimum fund amout of USD
         // 1.How do we send ETH to this contract
         require(
-            msg.value.getConversionRate() >= MINIMUM_USD,
+            msg.value.getConversionRate(priceFeed) >= MINIMUM_USD,
             "Didn't send enough ETH"
         ); //1e18 == 1 * 10^18
         //if condition is not met, require reverts everything done in the function!!!
