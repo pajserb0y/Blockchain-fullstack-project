@@ -8,6 +8,16 @@ pragma solidity ^0.8.8;
 import "./PriceConverter.sol";
 import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 
+//FUNCTIONS ORDER:
+//CONSTRUCTOR
+//RECEIVE
+//FALLBACK
+//EXTERNAL
+//PUBLIC
+//INTERNAL
+//PRIVATE
+//VIEW/PURE
+
 error FundMe__NotOwner();
 
 /// @title Contract for crowd funding
@@ -18,15 +28,14 @@ contract FundMe {
     //Type declarations
     using PriceConverter for uint256;
 
-    //state variables
+    //STATE VARIABLES (STORAGE VARIABLES)
     uint256 public constant MINIMUM_USD = 50 * 1e18;
     //less gas with constant
-    address[] public funders;
-    mapping(address => uint256) public addressToAmoutFunded;
-
-    address public immutable i_owner;
+    address[] private s_funders;
+    mapping(address => uint256) private s_addressToAmountFunded;
+    address private immutable i_owner;
     //less gas with immutable
-    AggregatorV3Interface public priceFeed;
+    AggregatorV3Interface private s_priceFeed;
 
     modifier onlyOwner() {
         // require(msg.sender == i_owner,"Only owner can withdraw money");
@@ -38,7 +47,7 @@ contract FundMe {
 
     constructor(address priceFeedAddress) {
         i_owner = msg.sender; //msg.sender = one that deploys contract, for first time
-        priceFeed = AggregatorV3Interface(priceFeedAddress);
+        s_priceFeed = AggregatorV3Interface(priceFeedAddress);
     }
 
     //If someone wants to send money to contract without fundMe
@@ -56,25 +65,25 @@ contract FundMe {
         //set minimum fund amout of USD
         // 1.How do we send ETH to this contract
         require(
-            msg.value.getConversionRate(priceFeed) >= MINIMUM_USD,
+            msg.value.getConversionRate(s_priceFeed) >= MINIMUM_USD,
             "Didn't send enough ETH"
         ); //1e18 == 1 * 10^18
         //if condition is not met, require reverts everything done in the function!!!
         //everythong before require spends gas, but for everything after gas is returned!!!
-        funders.push(msg.sender);
-        addressToAmoutFunded[msg.sender] = msg.value;
+        s_funders.push(msg.sender);
+        s_addressToAmountFunded[msg.sender] = msg.value;
     }
 
     function withdraw() public onlyOwner {
         for (
             uint256 funderIndex = 0;
-            funderIndex < funders.length;
+            funderIndex < s_funders.length;
             funderIndex++
         ) {
-            address funder = funders[funderIndex];
-            addressToAmoutFunded[funder] = 0;
+            address funder = s_funders[funderIndex];
+            s_addressToAmountFunded[funder] = 0;
         }
-        funders = new address[](0);
+        s_funders = new address[](0);
         //transfer
         //msg,sender = address
         //payable(msg.sender) = payable address
@@ -87,5 +96,42 @@ contract FundMe {
             value: address(this).balance
         }("");
         require(callSuccess, "Call Failed");
+    }
+
+    function cheaperWithdraw() public payable onlyOwner {
+        address[] memory funders = s_funders;
+        //mapings can't be in memmory
+
+        for (
+            uint256 funderIndex = 0;
+            funderIndex < funders.length;
+            funderIndex++
+        ) {
+            address funder = funders[funderIndex];
+            s_addressToAmountFunded[funder] = 0;
+        }
+        s_funders = new address[](0);
+        (bool success, ) = i_owner.call{value: address(this).balance}("");
+        require(success, "Call failed");
+    }
+
+    function getOwner() public view returns (address) {
+        return i_owner;
+    }
+
+    function getFunder(uint256 index) public view returns (address) {
+        return s_funders[index];
+    }
+
+    function getAddressToAmountFunded(address funder)
+        public
+        view
+        returns (uint256)
+    {
+        return s_addressToAmountFunded[funder];
+    }
+
+    function getPriceFeed() public view returns (AggregatorV3Interface) {
+        return s_priceFeed;
     }
 }

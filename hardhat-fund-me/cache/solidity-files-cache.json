@@ -2,8 +2,8 @@
   "_format": "hh-sol-cache-2",
   "files": {
     "/mnt/c/Users/Marko/Desktop/Marko/Blockchain/Blockchain - 32 hour course/Blockchain-fullstack-project/hardhat-fund-me/contracts/FundMe.sol": {
-      "lastModificationDate": 1658249208063,
-      "contentHash": "f62ce8d30f1abfd526e88d6a79f8fb78",
+      "lastModificationDate": 1658307548989,
+      "contentHash": "6e36bb69c89a1cbc511d7543c306a683",
       "sourceName": "contracts/FundMe.sol",
       "solcConfig": {
         "version": "0.8.8",
